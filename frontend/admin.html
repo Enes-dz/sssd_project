@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/front/css/styles.css"/>
+</head>
+<body class="app">
+
+  <div class="topbar">
+    <div class="brand">Admin</div>
+    <div class="topbar-actions">
+      <a class="btn-sm secondary" href="/dashboard">My Account</a>
+      <button class="btn-sm secondary" onclick="doLogout()">Log out</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="greeting">
+      <h1 id="greeting-title">Welcome.</h1>
+      <p id="greeting-sub">Administer users, audit logs, and reserved usernames.</p>
+    </div>
+
+    <div id="page-alert" class="alert" style="display:none;"></div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="users" onclick="switchTab('users')">Users</button>
+      <button class="tab" data-tab="logs" onclick="switchTab('logs')">Audit Logs</button>
+      <button class="tab" data-tab="reserved" onclick="switchTab('reserved')">Reserved Usernames</button>
+    </div>
+
+    <!-- ═══ USERS ═══ -->
+    <section id="tab-users" class="panel">
+      <h2>Users</h2>
+      <p class="panel-sub">Block or unblock accounts. Blocked users cannot log in.</p>
+      <div id="users-alert" class="alert" style="display:none;"></div>
+      <div class="toolbar">
+        <input type="text" id="users-search" placeholder="Search by name, username, or email…"
+               onkeydown="if(event.key==='Enter') loadUsers(1)"/>
+        <button class="btn-sm" onclick="loadUsers(1)">Search</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>ID</th><th>Name</th><th>Username</th><th>Email</th>
+              <th>Role</th><th>2FA</th><th>Status</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="users-pagination"></div>
+    </section>
+
+    <!-- ═══ AUDIT LOGS ═══ -->
+    <section id="tab-logs" class="panel" style="display:none;">
+      <h2>Audit Logs</h2>
+      <p class="panel-sub">Full activity history with filtering and pagination.</p>
+      <div id="logs-alert" class="alert" style="display:none;"></div>
+      <div class="filters">
+        <div class="field">
+          <label for="f-event">Event type</label>
+          <select id="f-event"><option value="">All</option></select>
+        </div>
+        <div class="field">
+          <label for="f-action">Action</label>
+          <select id="f-action"><option value="">All</option></select>
+        </div>
+        <div class="field">
+          <label for="f-status">Status</label>
+          <input type="text" id="f-status" placeholder="e.g. success"/>
+        </div>
+        <div class="field">
+          <label for="f-userid">User ID</label>
+          <input type="number" id="f-userid" placeholder="e.g. 1"/>
+        </div>
+        <div class="field">
+          <label for="f-role">User role</label>
+          <input type="text" id="f-role" placeholder="user / admin"/>
+        </div>
+        <div class="field">
+          <label for="f-ip">IP address</label>
+          <input type="text" id="f-ip" placeholder="contains…"/>
+        </div>
+        <div class="field">
+          <label for="f-from">From date</label>
+          <input type="date" id="f-from"/>
+        </div>
+        <div class="field">
+          <label for="f-to">To date</label>
+          <input type="date" id="f-to"/>
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button class="btn-sm" onclick="loadLogs(1)">Apply filters</button>
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button class="btn-sm secondary" onclick="resetLogFilters()">Reset</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>ID</th><th>Time</th><th>User</th><th>Role</th><th>Event</th>
+              <th>Action</th><th>Status</th><th>IP</th><th>User agent</th>
+            </tr>
+          </thead>
+          <tbody id="logs-tbody"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="logs-pagination"></div>
+    </section>
+
+    <!-- ═══ RESERVED USERNAMES ═══ -->
+    <section id="tab-reserved" class="panel" style="display:none;">
+      <h2>Reserved Usernames</h2>
+      <p class="panel-sub">Usernames that cannot be registered by users.</p>
+      <div id="reserved-alert" class="alert" style="display:none;"></div>
+      <div class="toolbar">
+        <input type="text" id="reserved-new" placeholder="Add a reserved username (alphanumeric)…"
+               onkeydown="if(event.key==='Enter') addReserved()"/>
+        <button class="btn-sm" onclick="addReserved()">Add</button>
+      </div>
+      <div class="toolbar">
+        <input type="text" id="reserved-search" placeholder="Search reserved usernames…"
+               onkeydown="if(event.key==='Enter') loadReserved(1)"/>
+        <button class="btn-sm secondary" onclick="loadReserved(1)">Search</button>
+      </div>
+      <div class="reserved-list" id="reserved-list"></div>
+      <div class="pagination" id="reserved-pagination"></div>
+    </section>
+
+  </div>
+
+  <script src="/front/js/dashboard-common.js"></script>
+  <script src="/front/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Set up authenticator</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+  <div class="card" style="max-width:440px;">
+    <div class="brand">Set up authenticator.</div>
+    <p class="subtitle">Scan the QR code with Google Authenticator, Authy, or any TOTP app.</p>
+
+    <div id="totp-error" class="alert alert-error" style="display:none;"></div>
+
+    <p id="loading" class="hint" style="text-align:center; padding:1rem 0;">Generating your authenticator code…</p>
+
+    <div id="setup-content" style="display:none;">
+      <div class="setup-box" style="text-align:center;">
+        <img id="totp-qr" alt="TOTP QR code" style="margin:0.5rem auto;" />
+        <p class="hint" style="margin-top:0.75rem;">Can't scan? Enter this key manually:</p>
+        <code id="totp-key" style="display:block; font-family:ui-monospace,Menlo,monospace; font-size:0.85rem; word-break:break-all; margin-top:0.35rem;"></code>
+        <button id="copy-btn" class="btn-sm secondary" style="margin-top:0.6rem;" onclick="copyKey()">Copy key</button>
+      </div>
+
+      <div id="recovery-note" class="recovery-note" style="display:none;"></div>
+
+      <ol class="hint" style="margin:1rem 0 0 1.1rem; line-height:1.6;">
+        <li>Add the account in your authenticator app.</li>
+        <li>Return to the login page and sign in.</li>
+        <li>Enter the 6-digit code from the app when prompted.</li>
+      </ol>
+
+      <a class="btn" href="login.html" style="text-align:center; text-decoration:none;">Continue to login</a>
+    </div>
+
+    <a id="back-link" class="switch-link" href="login.html" style="display:none; margin-top:1rem;">Back to login</a>
+  </div>
+
+  <script src="js/totp-setup.js"></script>
+</body>
+</html>

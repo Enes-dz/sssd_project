@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/front/css/styles.css"/>
+</head>
+<body class="app">
+
+  <div class="topbar">
+    <div class="brand">Account</div>
+    <div class="topbar-actions">
+      <a id="admin-link" class="btn-sm secondary" href="/admin" style="display:none;">Admin Dashboard</a>
+      <button class="btn-sm secondary" onclick="doLogout()">Log out</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="greeting">
+      <h1 id="greeting-title">Welcome.</h1>
+      <p id="greeting-sub">Manage your account and security settings.</p>
+    </div>
+
+    <div id="page-alert" class="alert" style="display:none;"></div>
+
+    <!-- ── Account overview ── -->
+    <div class="panel">
+      <h2>Account details</h2>
+      <p class="panel-sub">Your profile information.</p>
+      <div class="info-grid">
+        <div class="info-item"><div class="info-label">Full name</div><div class="info-value" id="info-name">—</div></div>
+        <div class="info-item"><div class="info-label">Username</div><div class="info-value" id="info-username">—</div></div>
+        <div class="info-item"><div class="info-label">Email</div><div class="info-value" id="info-email">—</div></div>
+        <div class="info-item"><div class="info-label">Phone</div><div class="info-value" id="info-phone">—</div></div>
+        <div class="info-item"><div class="info-label">Role</div><div class="info-value" id="info-role">—</div></div>
+      </div>
+    </div>
+
+    <!-- ── Two-factor authentication ── -->
+    <div class="panel">
+      <h2>Two-factor authentication</h2>
+      <p class="panel-sub">At least one method must always remain enabled.</p>
+      <div id="twofa-alert" class="alert" style="display:none;"></div>
+
+      <!-- Email -->
+      <div class="method-row">
+        <div class="method-info">
+          <div class="method-name">Email <span id="badge-email" class="badge off">Disabled</span></div>
+          <div class="method-desc">Receive a one-time code at your email address.</div>
+        </div>
+        <div>
+          <button class="btn-sm" id="btn-email-enable" onclick="startEnable('email')">Enable</button>
+          <button class="btn-sm danger" id="btn-email-disable" onclick="disableMethod('email')" style="display:none;">Disable</button>
+        </div>
+      </div>
+      <div id="setup-email" class="setup-box" style="display:none;">
+        <div class="method-desc">Enter the 6-digit code sent to your email.</div>
+        <div class="inline-form">
+          <input type="text" id="email-code" maxlength="6" inputmode="numeric" placeholder="000000"
+                 oninput="this.value=this.value.replace(/\D/g,'')"/>
+          <button class="btn-sm" onclick="confirmCode('email')">Confirm</button>
+          <button class="btn-sm ghost" onclick="cancelSetup('email')">Cancel</button>
+        </div>
+      </div>
+
+      <!-- SMS -->
+      <div class="method-row">
+        <div class="method-info">
+          <div class="method-name">SMS <span id="badge-sms" class="badge off">Disabled</span></div>
+          <div class="method-desc">Receive a one-time code by text message.</div>
+        </div>
+        <div>
+          <button class="btn-sm" id="btn-sms-enable" onclick="startEnable('sms')">Enable</button>
+          <button class="btn-sm danger" id="btn-sms-disable" onclick="disableMethod('sms')" style="display:none;">Disable</button>
+        </div>
+      </div>
+      <div id="setup-sms" class="setup-box" style="display:none;">
+        <div class="method-desc">Enter the 6-digit code sent to your phone.</div>
+        <div class="inline-form">
+          <input type="text" id="sms-code" maxlength="6" inputmode="numeric" placeholder="000000"
+                 oninput="this.value=this.value.replace(/\D/g,'')"/>
+          <button class="btn-sm" onclick="confirmCode('sms')">Confirm</button>
+          <button class="btn-sm ghost" onclick="cancelSetup('sms')">Cancel</button>
+        </div>
+      </div>
+
+      <!-- TOTP -->
+      <div class="method-row">
+        <div class="method-info">
+          <div class="method-name">Authenticator app (TOTP) <span id="badge-totp" class="badge off">Disabled</span></div>
+          <div class="method-desc">Use an app like Google Authenticator or Authy.</div>
+        </div>
+        <div>
+          <button class="btn-sm" id="btn-totp-enable" onclick="startEnable('totp')">Enable</button>
+          <button class="btn-sm danger" id="btn-totp-disable" onclick="disableMethod('totp')" style="display:none;">Disable</button>
+        </div>
+      </div>
+      <div id="setup-totp" class="setup-box" style="display:none;">
+        <div class="method-desc">Scan this QR code in your authenticator app, then enter a generated code.</div>
+        <img id="totp-qr" alt="TOTP QR code"/>
+        <div class="method-desc" style="word-break:break-all;">Manual key: <span id="totp-uri" class="mono"></span></div>
+        <div class="inline-form">
+          <input type="text" id="totp-code" maxlength="6" inputmode="numeric" placeholder="000000"
+                 oninput="this.value=this.value.replace(/\D/g,'')"/>
+          <button class="btn-sm" onclick="confirmTotp()">Confirm</button>
+          <button class="btn-sm ghost" onclick="cancelSetup('totp')">Cancel</button>
+        </div>
+      </div>
+
+      <div id="recovery-note" class="recovery-note" style="display:none;"></div>
+    </div>
+
+    <!-- ── Change password ── -->
+    <div class="panel">
+      <h2>Change password</h2>
+      <p class="panel-sub">You will be signed out of all sessions after changing your password.</p>
+      <div id="password-alert" class="alert" style="display:none;"></div>
+      <div class="field">
+        <label for="current-password">Current password</label>
+        <input type="password" id="current-password" autocomplete="current-password" placeholder="••••••••"/>
+      </div>
+      <div class="field">
+        <label for="new-password">New password</label>
+        <input type="password" id="new-password" autocomplete="new-password" placeholder="••••••••"/>
+        <p class="hint">8+ chars with uppercase, lowercase, number, and special character.</p>
+      </div>
+      <div class="field">
+        <label for="confirm-new-password">Confirm new password</label>
+        <input type="password" id="confirm-new-password" autocomplete="new-password" placeholder="••••••••"/>
+      </div>
+      <button class="btn-sm" id="change-password-btn" onclick="changePassword()">Update password</button>
+    </div>
+
+  </div>
+
+  <script src="/front/js/dashboard-common.js"></script>
+  <script src="/front/js/dashboard.js"></script>
+</body>
+</html>

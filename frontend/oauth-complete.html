@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complete Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">Almost there.</div>
+    <p class="subtitle" id="oauth-subtitle">Choose a username, password, and phone number to finish setting up your account.</p>
+
+    <div id="oauth-error"   class="alert alert-error"   style="display:none;"></div>
+    <div id="oauth-success" class="alert alert-success" style="display:none;"></div>
+
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="janedoe" autocomplete="username" />
+    </div>
+
+    <div class="field">
+      <label for="phone-number">Phone number</label>
+      <input type="tel" id="phone-number" placeholder="+1234567890" autocomplete="tel" />
+      <p class="hint">Include country code, e.g. +1 555 000 0000</p>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="new-password" />
+      <p class="hint">At least 8 characters with uppercase, lowercase, number &amp; special character.</p>
+    </div>
+
+    <div class="field">
+      <label for="confirm-password">Confirm password</label>
+      <input type="password" id="confirm-password" placeholder="••••••••" autocomplete="new-password" />
+    </div>
+
+    <button class="btn" id="complete-btn" onclick="handleOAuthComplete()">Create account</button>
+    <button class="btn btn-ghost" style="margin-top:0.5rem;" onclick="window.location.href='login.html'">Back to login</button>
+  </div>
+
+  <script src="js/oauth-complete.js"></script>
+</body>
+</html>
